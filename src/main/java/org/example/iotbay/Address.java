@@ -1,4 +1,4 @@
-package com.VisaPeople.IoTBay;
+package org.example.iotbay;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
