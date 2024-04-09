@@ -82,25 +82,12 @@ Once you have the prerequisites in place, follow these steps to get the IoTBay a
 2. **Database Setup**:
 - Update the `spring.datasource.url`, `spring.datasource.username`, and `spring.datasource.password` properties in the `application.properties` file with your PostgreSQL details. If you followed the command above, your URL is likely correct, but ensure the username and password match your PostgreSQL credentials.
 
-
-3. **Build the Project**:
-- Open a terminal or command prompt and navigate to the root directory of the IoTBay project you cloned.
-- Run the following Maven command to build the project and install dependencies:
-
-  ```
-  mvn clean install
-  ```
-
-4. **Run the Application**:
-- After the build completes successfully, start the Spring Boot application by running:
-
-  ```
-  mvn spring-boot:run
-  ```
+3. **Run the Application**:
+- After the dependencies download successfully, start the Spring Boot application
 
 - The application will start running on `http://localhost:8080`.
 
-5. **Accessing the Swagger UI**:
+4. **Accessing the Swagger UI**:
 - With the application running, you can access the Swagger UI to interact with the API by visiting `http://localhost:8080/api-list`.
 
 By completing these steps, you should have the IoTBay application up and running on your local machine. You can now explore its features and functionalities through Swagger UI.
