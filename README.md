@@ -1,7 +1,7 @@
 <br/>
 <p align="center">
   <a href="https://github.com/wdh70743/IoTBay">
-    <img src="3016.png" alt="Logo" width="200" height="200">
+    <img src="3016.png" alt="Logo" width="400" height="400">
   </a>
 
   <h3 align="center">IotBay Project</h3>
