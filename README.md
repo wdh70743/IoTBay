@@ -32,7 +32,7 @@
 
 ## About The Project
 
-![Screen Shot](images/screenshot.png)
+![Screen Shot](image.png)
 
 ## Project Description
 
