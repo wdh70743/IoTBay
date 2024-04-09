@@ -1,4 +1,4 @@
-package org.example.iotbay;
+package org.example.iotbay.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,26 +9,26 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.util.Date;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "annonymousUser")
-public class AnnonymousUser {
+@Table(name = "address")
+public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "email", nullable = false, unique = true)
-    private String email;
-    @Column(name = "firstName")
-    private String firstName;
-    @Column(name = "lastName")
-    private String lastName;
-    @Column(name = "phoneNumber")
-    private String phoneNumber;
+    private Long addressId;
+    @Column(name = "unit")
+    private String unit;
+    @Column(name = "streetNumber")
+    private String streetNumber;
+    @Column(name = "city")
+    private String city;
+    @Column(name = "state")
+    private String state;
+    @Column(name = "country")
+    private String country;
     @CreatedDate
     private Date createdAT;
 }

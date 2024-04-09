@@ -1,4 +1,4 @@
-package org.example.iotbay;
+package org.example.iotbay.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
