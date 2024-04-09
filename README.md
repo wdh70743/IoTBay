@@ -76,9 +76,9 @@ Before setting up the IoTBay application, ensure your system meets the following
 Once you have the prerequisites in place, follow these steps to get the IoTBay application running:
 
 1. **Clone the Repository**: 
-- Clone the IoTBay project repository to your local machine using Git: 
-
-  '''
+- Clone the IoTBay project repository to your local machine using Git:
+  
+  ```
   git clone https://github.com/wdh70743/IoTBay
   ```
   
