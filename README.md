@@ -77,9 +77,11 @@ Once you have the prerequisites in place, follow these steps to get the IoTBay a
 
 1. **Clone the Repository**: 
 - Clone the IoTBay project repository to your local machine using Git: 
-'''
-git clone https://github.com/wdh70743/IoTBay
-'''
+
+  '''
+  git clone https://github.com/wdh70743/IoTBay
+  ```
+  
 2. **Database Setup**:
 - Update the `spring.datasource.url`, `spring.datasource.username`, and `spring.datasource.password` properties in the `application.properties` file with your PostgreSQL details. If you followed the command above, your URL is likely correct, but ensure the username and password match your PostgreSQL credentials.
 
