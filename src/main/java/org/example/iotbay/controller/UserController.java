@@ -35,7 +35,8 @@ public class UserController {
             @Parameter(name = "firstName", description = "The first name of the user", example = "Dohun"),
             @Parameter(name = "lastName", description = "The last name of the user", example = "Won"),
             @Parameter(name = "phoneNumber", description = "The phone number of the user", example = "0432472354"),
-            @Parameter(name = "role", description = "The role of the user", example = "CUSTOMER or STAFF")
+            @Parameter(name = "role", description = "The role of the user", example = "CUSTOMER or STAFF"),
+            @Parameter(name="address", description = "The address of the user", example = "172-176 Parramatta Road, Homebush, NSW")
     })
     public ResponseEntity<Response> register(@Validated @RequestBody Request request){
         return ResponseEntity.ok(userService.createUser(request));
