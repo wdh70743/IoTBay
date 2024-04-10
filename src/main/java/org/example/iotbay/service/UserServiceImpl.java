@@ -5,6 +5,7 @@ import org.example.iotbay.dto.UserDTO.LoginRequest;
 import org.example.iotbay.dto.UserDTO.Response;
 import org.example.iotbay.dto.UserDTO.Request;
 import org.example.iotbay.exception.ResourceNotFoundException;
+import org.example.iotbay.exception.UnauthorizedAccessException;
 import org.example.iotbay.exception.UserAlreadyExistException;
 import org.example.iotbay.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -44,6 +45,20 @@ public class UserServiceImpl implements UserService{
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
             throw new IllegalArgumentException("Email or Password is incorrect");
+        }
+        return modelMapper.map(user, Response.class);
+    }
+
+    @Override
+    public Response loginStaff(LoginRequest loginRequest) {
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
+
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
+            throw new IllegalArgumentException("Email or Password is incorrect");
+        }
+        if (!Objects.equals(user.getRole(), "STAFF")){
+            throw new UnauthorizedAccessException("User is not authorized as staff member");
         }
         return modelMapper.map(user, Response.class);
     }

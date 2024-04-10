@@ -10,7 +10,10 @@ public interface UserService {
     Response createUser(Request request);
     Response loginUser(LoginRequest loginRequest);
 
+    Response loginStaff(LoginRequest loginRequest);
+
     void logoutUser();
+
 
 
 }
