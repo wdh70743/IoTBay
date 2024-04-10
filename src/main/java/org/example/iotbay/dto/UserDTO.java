@@ -19,6 +19,7 @@ public class UserDTO {
         private String lastName;
         private String phoneNumber;
         private String role;
+        private String address;
     }
 
     @NoArgsConstructor
@@ -32,6 +33,7 @@ public class UserDTO {
         private String lastName;
         private String phoneNumber;
         private String role;
+        private String address;
         private LocalDateTime createdAt;
     }
     @NoArgsConstructor

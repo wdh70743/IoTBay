@@ -44,6 +44,10 @@ public class User extends BaseEntity{
     @Column(length=50)
     private String phoneNumber;
 
+    @NotNull(message = "Address cannot be null")
+    @Column(length=500)
+    private String address;
+
     @NotNull(message = "Role cannot be null")
     @Column(length = 25)
     private String role;
