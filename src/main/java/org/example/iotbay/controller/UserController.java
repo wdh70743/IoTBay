@@ -51,4 +51,14 @@ public class UserController {
         return ResponseEntity.ok(userService.loginUser(loginRequest));
     }
 
+    @PostMapping("/login-staff")
+    @Operation(summary = "Login with Email and Password", description="Login with staff's email and password")
+    @Parameters({
+            @Parameter(name = "email", description = "The email of the staff", example = "wdh70743@gmail.com"),
+            @Parameter(name = "password", description = "The password of the staff", example = "abcd1234"),
+    })
+    public ResponseEntity<Response> loginStaff(@RequestBody LoginRequest loginRequest){
+        return ResponseEntity.ok(userService.loginStaff(loginRequest));
+    }
+
 }
