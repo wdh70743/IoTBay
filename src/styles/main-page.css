@@ -1,0 +1,25 @@
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100vh;
+  }
+  
+  .content-main {
+    width: 100%;
+    max-width: 400px;
+    margin: 15px;
+  }
+  
+  /* Further style your input fields and button */
+  .content-logout button {
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+  }
+  
+  /* Include additional styles for alert messages */
+  .alert {
+    margin-bottom: 15px;
+  }
