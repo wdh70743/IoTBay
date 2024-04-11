@@ -41,7 +41,7 @@ public class User extends BaseEntity{
     private String lastName;
 
     @NotNull(message = "PhoneNumber cannot be null")
-    @Column(length=50)
+    @Column(length=50, unique=true)
     private String phoneNumber;
 
     @NotNull(message = "Address cannot be null")
