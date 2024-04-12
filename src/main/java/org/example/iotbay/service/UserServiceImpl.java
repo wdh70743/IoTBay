@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Response createUser(Request request) {
-        boolean userExists = userRepository.findByEmail(request.getEmail()).isPresent() || userRepository.findByPassword(request.getPassword()).isPresent();
+        boolean userExists = userRepository.findByEmail(request.getEmail()).isPresent() || userRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent();
 
         if (userExists) {
             throw new UserAlreadyExistException("An account with the provided credentials already exists.");
