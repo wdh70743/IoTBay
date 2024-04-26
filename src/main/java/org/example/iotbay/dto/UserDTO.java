@@ -27,6 +27,7 @@ public class UserDTO {
     @Getter
     @Setter
     public static class Response{
+        private Long id;
         private String email;
         private String password;
         private String firstName;
@@ -44,4 +45,6 @@ public class UserDTO {
         private String email;
         private String password;
     }
+
+
 }

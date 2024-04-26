@@ -3,13 +3,12 @@ package org.example.iotbay.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -51,6 +50,11 @@ public class User extends BaseEntity{
     @NotNull(message = "Role cannot be null")
     @Column(length = 25)
     private String role;
+
+    @ToString.Exclude
+    @OrderBy("id")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private final Set<UserLog> userLogs = new LinkedHashSet<>();
 
     //    @Column(name = "addressId", nullable = false, unique = true)
 //    private Long addressId;
