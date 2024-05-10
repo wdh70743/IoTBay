@@ -11,28 +11,36 @@ const LoginPage = () => {
     const navigate = useNavigate();
 
     const handleLogin = async (event) => {
-        event.preventDefault();
-        setErrorMessage(''); // Clear any existing error messages
-        try {
-            let response;
-            if (isStaffLogin) {
-                // Attempt staff login
-                response = await userService.loginStaff(email, password);
-            } else {
-                // Attempt user login
-                response = await userService.login(email, password);
-            }
-
-            // Assuming both responses have the same format
-            if (response.status === 200) {
-                // Assuming the backend correctly sets a user or staff role in the response
-                localStorage.setItem('user', JSON.stringify(response.data)); // Consider storing as 'profile' to unify user/staff data
-                navigate('/main'); // Redirect to the main/welcome page
-            }
-        } catch (error) {
-            setErrorMessage(error.response?.data?.message || 'Failed to login, please try again.');
-            console.error(error);
+    event.preventDefault();
+    setErrorMessage(''); // Clear any existing error messages
+    try {
+        let response;
+        if (isStaffLogin) {
+            // Attempt staff login
+            response = await userService.loginStaff(email, password);
+        } else {
+            // Attempt user login
+            response = await userService.login(email, password);
         }
+
+        // Assuming both responses have the same format
+        if (response.status === 200) {
+            // Set user data in local storage including the role
+            localStorage.setItem('user', JSON.stringify({
+                ...response.data,
+                role: isStaffLogin ? 'STAFF' : 'USER'  // Assuming you set role based on the type of login
+            }));
+            navigate('/main'); // Redirect to the main/welcome page
+        }
+    } catch (error) {
+        setErrorMessage(error.response?.data?.message || 'Failed to login, please try again.');
+        console.error(error);
+    }
+};
+
+
+    const backToLanding = () => {
+        navigate('/');
     };
 
     return (
@@ -74,8 +82,9 @@ const LoginPage = () => {
                         <label htmlFor="staffLoginCheck" className="ms-2">Login as Staff</label>
                     </div>
 
-                    <button className="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+                    <button className="btn btn-primary w-100 py-2 mb-3" type="submit">Sign in</button>
                 </form>
+                <button className='btn btn-primary w-100 py-2' onClick={backToLanding}>Back to Landing Page</button>
             </main>
         </div>
     );
