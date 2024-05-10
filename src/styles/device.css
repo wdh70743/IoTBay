@@ -1,0 +1,60 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100vh;
+}
+  
+.content-main {
+  width: 100%;
+  max-width: 400px;
+  margin: 15px;
+}
+
+.search-input {
+    margin-top: 10px;
+    width: 100%;
+}
+
+.device-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.device-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+@media (max-width: 480px) {
+  .main-container {
+      padding: 10px;
+  }
+}
+  
+.content-logout button {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+}
+
+.alert {
+  margin-bottom: 15px;
+}
+
+.top-right-buttons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}

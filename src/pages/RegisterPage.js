@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/register-page.css'; // Ensure the path is correct
-import UserService from '../services/UserService';
+import userService from '../services/UserService';
 
 
 
@@ -29,7 +29,7 @@ const RegisterPage = () => {
                 createAt: new Date().toISOString() // Assuming backend requires an ISO string
             }
 
-            const response = await UserService.register(user);
+            const response = await userService.register(user);
             
             if (response.status === 200) {
                 navigate('/login');
@@ -40,6 +40,10 @@ const RegisterPage = () => {
             setErrorMessage(error.response?.data?.message || 'Registration failed, please try again.');
             console.error(error);
         }
+    };
+
+    const backToLanding = () => {
+        navigate('/');
     };
 
     return (
@@ -54,6 +58,7 @@ const RegisterPage = () => {
                 <input type="text" value={address} onChange={e => setAddress(e.target.value)} placeholder="Address" required />
                 <input type="tel" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} placeholder="Phone Number" required />
                 <button type="submit" className="btn btn-primary">Register</button>
+                <button className='btn btn-primary' onClick={backToLanding}>Back to Landing Page</button>
             </form>
         </div>
     );
