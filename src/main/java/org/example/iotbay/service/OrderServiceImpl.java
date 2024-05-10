@@ -7,6 +7,7 @@ import org.example.iotbay.domain.OrderLineItem;
 import org.example.iotbay.domain.Product;
 import org.example.iotbay.domain.User;
 import org.example.iotbay.dto.OrderDTO;
+import org.example.iotbay.exception.ResourceNotFoundException;
 import org.example.iotbay.repository.OrderLineItemRepository;
 import org.example.iotbay.repository.OrderRepository;
 import org.example.iotbay.repository.ProductRepository;
@@ -40,76 +41,95 @@ public class OrderServiceImpl implements OrderService {
         order.setUser(user);
         order.setStatus(request.getStatus());
 
-        // Save the order first to ensure it has an ID
         Order savedOrder = orderRepository.save(order);
-
-        // Now handle the order line items
+        System.out.println("Order created for UserId: " + user.getId());
         List<OrderLineItem> orderItems = request.getItems().stream()
                 .map(itemDto -> {
+                    Product product = productRepository.findById(itemDto.getProductId())
+                            .orElseThrow(() -> new RuntimeException("Product not found with ID: " + itemDto.getProductId()));
                     OrderLineItem orderItem = new OrderLineItem();
-                    orderItem.setOrder(savedOrder); // Ensure order is set with savedOrder which has ID
-                    orderItem.setProduct(productRepository.findById(itemDto.getProductId())
-                            .orElseThrow(() -> new RuntimeException("Product not found with ID: " + itemDto.getProductId())));
+                    orderItem.setOrder(savedOrder);
+                    orderItem.setProduct(product);
                     orderItem.setQuantity(itemDto.getQuantity());
                     orderItem.setPrice(itemDto.getPrice());
                     return orderItem;
                 }).collect(Collectors.toList());
 
-        // Save all the order items at once
         orderLineItemRepository.saveAll(orderItems);
 
-        // Optionally, update the order with the items if needed
+        List<OrderDTO.OrderLineItemDTO> itemsDto = orderItems.stream().map(item -> {
+            OrderDTO.OrderLineItemDTO dto = new OrderDTO.OrderLineItemDTO();
+            dto.setProductId(item.getProduct().getId()); // Manually set productId
+            dto.setQuantity(item.getQuantity());
+            dto.setPrice(item.getPrice());
+            return dto;
+        }).collect(Collectors.toList());
         savedOrder.setItems(new HashSet<>(orderItems));
         orderRepository.save(savedOrder);
 
-        return modelMapper.map(savedOrder, OrderDTO.Response.class);
+        OrderDTO.Response response = modelMapper.map(savedOrder, OrderDTO.Response.class);
+        response.setItems(itemsDto);
+        response.setUserId(savedOrder.getUser().getId());
+        return response;
     }
 
 
     @Override
-    public OrderDTO.Response getOrderById(Long orderId) {
-        Order order = orderRepository.findById(orderId)
+    public Order getOrderById(Long orderId) {
+        return orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
-        return modelMapper.map(order, OrderDTO.Response.class);
     }
 
     @Override
-    public List<OrderDTO.Response> getOrdersByUserId(Long userId) {
+    public List<Order> getOrdersByUserId(Long userId) {
 
-        List<Order> orders = orderRepository.findByUserId(userId);
-        return orders.stream()
-                .map(order -> modelMapper.map(order, OrderDTO.Response.class))
-                .collect(Collectors.toList());
+        List<Order> orders = orderRepository.findAllByUserId(userId);
+        return orders;
     }
 
     @Override
     @Transactional
     public OrderDTO.Response updateOrder(Long orderId, OrderDTO.Request request) {
-        Order existingOrder = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
-        modelMapper.map(request, existingOrder);
 
+        // Find the existing order
+        Order existingOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + orderId));
+
+        // Update order details
         if (!existingOrder.getUser().getId().equals(request.getUserId())) {
             User user = userRepository.findById(request.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found with ID: " + request.getUserId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + request.getUserId()));
             existingOrder.setUser(user);
         }
-        Order updatedOrder = orderRepository.save(existingOrder);
+        existingOrder.setStatus(request.getStatus());
 
-        // If you want to replace existing items, you may need to clear and re-add them
-        orderLineItemService.deleteOrderItem(orderId);
-        List<OrderDTO.OrderLineItemDTO> itemsDto = orderLineItemService.createOrderLineItems(updatedOrder.getId(), request.getItems());
-        Set<OrderLineItem> items = itemsDto.stream().map(itemDto -> {
-            OrderLineItem orderLineItem = modelMapper.map(itemDto, OrderLineItem.class);
-            orderLineItem.setOrder(updatedOrder); // Set the updatedOrder reference here
-            return orderLineItem;
-        }).collect(Collectors.toSet()); // Collect into a Set
+        // Update items
+        updateOrderItems(existingOrder, request.getItems());
 
-        updatedOrder.setItems(items);
-        orderRepository.save(updatedOrder); // Save the updated order with its items
+        // Save the updated order
+        orderRepository.save(existingOrder);
 
-        return modelMapper.map(updatedOrder, OrderDTO.Response.class);
+        // Convert the updated order to DTO and return
+        return modelMapper.map(existingOrder, OrderDTO.Response.class);
     }
+
+    private void updateOrderItems(Order existingOrder, List<OrderDTO.OrderLineItemDTO> itemsDto) {
+        // Clear existing items to avoid issues with orphan removal
+        existingOrder.getItems().clear();
+
+        // Re-add updated or new items
+        for (OrderDTO.OrderLineItemDTO itemDto : itemsDto) {
+            Product product = productRepository.findById(itemDto.getProductId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + itemDto.getProductId()));
+            OrderLineItem orderItem = new OrderLineItem();
+            orderItem.setOrder(existingOrder);
+            orderItem.setProduct(product);
+            orderItem.setQuantity(itemDto.getQuantity());
+            orderItem.setPrice(itemDto.getPrice());
+            existingOrder.getItems().add(orderItem);
+        }
+    }
+
 
     @Override
     public String deleteOrder(Long orderId) {

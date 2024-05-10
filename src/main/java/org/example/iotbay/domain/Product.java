@@ -40,4 +40,6 @@ public class Product extends BaseEntity {
     @NotNull(message = "Price cannot be null")
     @PositiveOrZero(message="Price cannot be negative number")
     private Integer price;
+
+
 }

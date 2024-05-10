@@ -1,6 +1,7 @@
 package org.example.iotbay.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,7 @@ public class Order extends BaseEntity{
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderLineItem> items = new HashSet<>();
 

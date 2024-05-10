@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.example.iotbay.domain.Order;
 import org.example.iotbay.dto.OrderDTO;
 import org.example.iotbay.service.OrderService;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+
 @RequestMapping("/api/order")
 @Tag(name= "order", description = "Order API")
 
@@ -34,16 +36,16 @@ public class OrderController {
 
     @GetMapping("/{orderId}")
     @Operation(summary = "Get order details", description = "Retrieves details of a specific order by its ID.")
-    public ResponseEntity<OrderDTO.Response> getOrderById(@PathVariable Long orderId) {
-        OrderDTO.Response response = orderService.getOrderById(orderId);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Order> getOrderById(@PathVariable Long orderId) {
+        Order order = orderService.getOrderById(orderId);
+        return ResponseEntity.ok(order);
     }
 
     @GetMapping("/user/{userId}")
     @Operation(summary = "List orders by user", description = "Retrieves all orders associated with a specific user ID.")
-    public ResponseEntity<List<OrderDTO.Response>> getOrdersByUserId(@PathVariable Long userId) {
-        List<OrderDTO.Response> responses = orderService.getOrdersByUserId(userId);
-        return ResponseEntity.ok(responses);
+    public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable Long userId) {
+        List<Order> orders = orderService.getOrdersByUserId(userId);
+        return ResponseEntity.ok(orders);
     }
 
     @PutMapping("/{orderId}")
