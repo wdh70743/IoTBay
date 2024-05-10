@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService{
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
+        if (!Objects.equals(user.getPassword(), loginRequest.getPassword())){
             throw new IllegalArgumentException("Email or Password is incorrect");
         }
         saveLog(user, "SIGN-OUT");
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService{
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
+        if (!Objects.equals(user.getPassword(), loginRequest.getPassword())){
             throw new IllegalArgumentException("Email or Password is incorrect");
         }
         if (!Objects.equals(user.getRole(), "STAFF")){
