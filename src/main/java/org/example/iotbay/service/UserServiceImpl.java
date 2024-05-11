@@ -99,6 +99,7 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
 
         if (!Objects.equals(user.getPassword(), loginRequest.getPassword())){
+
             throw new IllegalArgumentException("Email or Password is incorrect");
         }
         if (!Objects.equals(user.getRole(), "STAFF")){
