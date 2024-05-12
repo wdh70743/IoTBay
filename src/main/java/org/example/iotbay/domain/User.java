@@ -1,5 +1,6 @@
 package org.example.iotbay.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -51,6 +52,7 @@ public class User extends BaseEntity{
     @Column(length = 25)
     private String role;
 
+    @JsonManagedReference
     @ToString.Exclude
     @OrderBy("id")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

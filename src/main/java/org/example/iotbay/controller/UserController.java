@@ -62,7 +62,7 @@ public class UserController {
     }
 
     @PostMapping("/logout-user")
-    @Operation(summary = "Logout with Email and Password", description="Logout with staff's email and password")
+    @Operation(summary = "Logout with Email and Password", description="Logout with user's email and password")
     @Parameters({
             @Parameter(name = "email", description = "The email of the staff", example = "wdh70743@gmail.com"),
             @Parameter(name = "password", description = "The password of the staff", example = "abcd1234"),

@@ -31,11 +31,9 @@ public class UserServiceImpl implements UserService{
 
 
     private void saveLog(User user, String action){
-        UserLog userLog = new UserLog(
-                user.getId(),
-                user,
-                action
-        );
+        UserLog userLog = new UserLog();
+        userLog.setUser(user);
+        userLog.setAction(action);
         userLogRepository.save(userLog);
     }
 
@@ -51,6 +49,7 @@ public class UserServiceImpl implements UserService{
         request.setPassword(encodedPassword);
         User user = modelMapper.map(request, User.class);
         User createdUser = userRepository.save(user);
+        saveLog(user, "REGISTER");
         return modelMapper.map(createdUser, Response.class);
     }
 
@@ -99,7 +98,6 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
 
         if (!Objects.equals(user.getPassword(), loginRequest.getPassword())){
-
             throw new IllegalArgumentException("Email or Password is incorrect");
         }
         if (!Objects.equals(user.getRole(), "STAFF")){
@@ -134,7 +132,8 @@ public class UserServiceImpl implements UserService{
         }
 
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        user.setPassword(encodedPassword);
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setPhoneNumber(request.getPhoneNumber());
