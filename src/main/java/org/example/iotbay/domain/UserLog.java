@@ -1,5 +1,6 @@
 package org.example.iotbay.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ public class UserLog extends BaseEntity{
     @Column(nullable = false, updatable = false)
     private Long id;
 
+    @JsonBackReference
     @ManyToOne(optional = false)
     private User user;
 
