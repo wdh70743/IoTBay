@@ -7,8 +7,8 @@ class ProductService {
         return axios.post(`${this.BASE_URL}/create`, product);
     }
 
-    delete(id) {
-        return axios.delete(`${this.BASE_URL}/${id}`);
+    delete(id, userId) {
+        return axios.delete(`${this.BASE_URL}/${id}?requestedBy=` + userId);
     }
 
     update(id, product) {
@@ -20,11 +20,11 @@ class ProductService {
     }
 
     getProductByType(type) {
-        return axios.get(`${this.BASE_URL}/by-type`, { params: { type } });
+        return axios.get(`${this.BASE_URL}/by-type?keyword=`+type);
     }
 
     getProductByName(name) {
-        return axios.get(`${this.BASE_URL}/by-name`, { params: { name } });
+        return axios.get(`${this.BASE_URL}/by-name?keyword=`+name);
     }
 }
 
