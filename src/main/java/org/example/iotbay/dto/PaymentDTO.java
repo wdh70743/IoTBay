@@ -15,7 +15,7 @@ public class PaymentDTO {
     @Setter
     public static class Request{
         private Long orderId;
-        private Double amount;
+
         private String paymentMethod;
         private String cardLastFourDigits; // Only store last four digits for security reasons
         private LocalDateTime paymentDate;
