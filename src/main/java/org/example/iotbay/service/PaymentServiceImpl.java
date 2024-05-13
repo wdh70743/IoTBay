@@ -28,13 +28,16 @@ public class PaymentServiceImpl implements PaymentService{
     public PaymentDTO.Response createPayment(PaymentDTO.Request request) {
         Payment payment = modelMapper.map(request, Payment.class);
 
-        // Retrieve and set the order associated with the payment
         Order order = orderRepository.findById(request.getOrderId())
                 .orElseThrow(() -> new RuntimeException("Order not found with ID: " + request.getOrderId()));
-        payment.setOrder(order);  // Make sure the order is set on the payment
+        payment.setOrder(order);
 
+        double totalAmount = order.getItems().stream()
+                .mapToDouble(item -> item.getPrice())
+                .sum();
+        payment.setAmount(totalAmount);
         if (payment.getPaymentStatus() == null) {
-            payment.setPaymentStatus("Pending");  // Set default payment status if not provided
+            payment.setPaymentStatus("Pending");
         }
         payment = paymentRepository.save(payment);
         PaymentDTO.Response response = modelMapper.map(payment, PaymentDTO.Response.class);
@@ -45,13 +48,26 @@ public class PaymentServiceImpl implements PaymentService{
     @Override
     @Transactional
     public PaymentDTO.Response updatePayment(Long paymentId, PaymentDTO.Request request) {
-        Payment payment = paymentRepository.findById(paymentId)
+        Payment existingPayment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new RuntimeException("Payment not found with ID: " + paymentId));
 
-        modelMapper.map(request, payment);
-        payment = paymentRepository.save(payment);
-        return modelMapper.map(payment, PaymentDTO.Response.class);
+        if (request.getOrderId() == null) {
+            request.setOrderId(existingPayment.getOrder().getId());
+        } else {
+            Order order = orderRepository.findById(request.getOrderId())
+                    .orElseThrow(() -> new RuntimeException("Order not found with ID: " + request.getOrderId()));
+            existingPayment.setOrder(order);
+        }
+
+        modelMapper.map(request, existingPayment);
+        existingPayment = paymentRepository.save(existingPayment);
+
+        PaymentDTO.Response response = modelMapper.map(existingPayment, PaymentDTO.Response.class);
+        response.setOrderId(existingPayment.getOrder().getId());
+
+        return response;
     }
+
 
     @Override
     @Transactional
@@ -88,6 +104,7 @@ public class PaymentServiceImpl implements PaymentService{
     public String deletePayment(Long paymentId) {
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new RuntimeException("Payment not found with ID: " + paymentId));
+
         paymentRepository.delete(payment);
         return "Payment successfully deleted";
     }

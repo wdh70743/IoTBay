@@ -7,6 +7,7 @@ import org.example.iotbay.domain.OrderLineItem;
 import org.example.iotbay.domain.Product;
 import org.example.iotbay.domain.User;
 import org.example.iotbay.dto.OrderDTO;
+import org.example.iotbay.exception.InsufficientStockException;
 import org.example.iotbay.exception.ResourceNotFoundException;
 import org.example.iotbay.repository.OrderLineItemRepository;
 import org.example.iotbay.repository.OrderRepository;
@@ -42,16 +43,20 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(request.getStatus());
 
         Order savedOrder = orderRepository.save(order);
-        System.out.println("Order created for UserId: " + user.getId());
         List<OrderLineItem> orderItems = request.getItems().stream()
                 .map(itemDto -> {
                     Product product = productRepository.findById(itemDto.getProductId())
                             .orElseThrow(() -> new RuntimeException("Product not found with ID: " + itemDto.getProductId()));
+                    if (itemDto.getQuantity() > product.getQuantity()) {
+                        throw new InsufficientStockException("Requested quantity " + itemDto.getQuantity() +
+                                " exceeds available stock for product ID " + itemDto.getProductId());
+                    }
                     OrderLineItem orderItem = new OrderLineItem();
                     orderItem.setOrder(savedOrder);
                     orderItem.setProduct(product);
                     orderItem.setQuantity(itemDto.getQuantity());
-                    orderItem.setPrice(itemDto.getPrice());
+                    orderItem.setPrice((double)product.getPrice() * orderItem.getQuantity());
+                    product.setQuantity(product.getQuantity() - itemDto.getQuantity());
                     return orderItem;
                 }).collect(Collectors.toList());
 
@@ -91,11 +96,9 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDTO.Response updateOrder(Long orderId, OrderDTO.Request request) {
 
-        // Find the existing order
         Order existingOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + orderId));
 
-        // Update order details
         if (!existingOrder.getUser().getId().equals(request.getUserId())) {
             User user = userRepository.findById(request.getUserId())
                     .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + request.getUserId()));
@@ -103,38 +106,51 @@ public class OrderServiceImpl implements OrderService {
         }
         existingOrder.setStatus(request.getStatus());
 
-        // Update items
-        updateOrderItems(existingOrder, request.getItems());
-
-        // Save the updated order
-        orderRepository.save(existingOrder);
-
-        // Convert the updated order to DTO and return
-        return modelMapper.map(existingOrder, OrderDTO.Response.class);
-    }
-
-    private void updateOrderItems(Order existingOrder, List<OrderDTO.OrderLineItemDTO> itemsDto) {
-        // Clear existing items to avoid issues with orphan removal
         existingOrder.getItems().clear();
 
-        // Re-add updated or new items
-        for (OrderDTO.OrderLineItemDTO itemDto : itemsDto) {
-            Product product = productRepository.findById(itemDto.getProductId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + itemDto.getProductId()));
-            OrderLineItem orderItem = new OrderLineItem();
-            orderItem.setOrder(existingOrder);
-            orderItem.setProduct(product);
-            orderItem.setQuantity(itemDto.getQuantity());
-            orderItem.setPrice(itemDto.getPrice());
-            existingOrder.getItems().add(orderItem);
-        }
+        List<OrderLineItem> updatedItems = request.getItems().stream()
+                .map(itemDto -> {
+                    Product product = productRepository.findById(itemDto.getProductId())
+                            .orElseThrow(() -> new RuntimeException("Product not found with ID: " + itemDto.getProductId()));
+                    OrderLineItem orderItem = new OrderLineItem();
+                    orderItem.setOrder(existingOrder);
+                    orderItem.setProduct(product);
+                    orderItem.setQuantity(itemDto.getQuantity());
+                    orderItem.setPrice(itemDto.getPrice());
+                    return orderItem;
+                }).collect(Collectors.toList());
+
+        existingOrder.getItems().addAll(updatedItems);
+
+        Order updatedOrder = orderRepository.save(existingOrder);
+
+        List<OrderDTO.OrderLineItemDTO> itemsDto = updatedItems.stream().map(item -> {
+            OrderDTO.OrderLineItemDTO dto = new OrderDTO.OrderLineItemDTO();
+            dto.setProductId(item.getProduct().getId());
+            dto.setQuantity(item.getQuantity());
+            dto.setPrice(item.getPrice());
+            return dto;
+        }).collect(Collectors.toList());
+
+        OrderDTO.Response response = modelMapper.map(updatedOrder, OrderDTO.Response.class);
+        response.setItems(itemsDto);
+        response.setUserId(updatedOrder.getUser().getId());
+
+        return response;
     }
+
 
 
     @Override
     public String deleteOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
+        order.getItems().forEach(item -> {
+            Product product = item.getProduct();
+            int newQuantity = product.getQuantity() + item.getQuantity();
+            product.setQuantity(newQuantity);
+            productRepository.save(product);
+        });
         orderRepository.delete(order);
         return "Order successfully deleted";
     }
