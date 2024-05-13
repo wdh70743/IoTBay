@@ -6,6 +6,8 @@ import '../styles/device.css';
 const ProductList = () => {
     const [devices, setDevices] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [searchType, setSearchType] = useState('name'); // Default search type
+    const user = JSON.parse(localStorage.getItem('user'));
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,13 +25,18 @@ const ProductList = () => {
     };
 
     const handleSearch = async () => {
+        if (!searchTerm.trim()) {
+            fetchDevices();
+            return;
+        }
         try {
-            if (!searchTerm.trim()) {
-                fetchDevices();
+            let response;
+            if (searchType === 'name') {
+                response = await productService.getProductByName(searchTerm);
             } else {
-                const response = await productService.searchProducts(searchTerm);
-                setDevices(response.data);
+                response = await productService.getProductByType(searchTerm);
             }
+            setDevices(response.data || []);
         } catch (error) {
             console.error('Search failed:', error);
         }
@@ -39,26 +46,47 @@ const ProductList = () => {
         setSearchTerm(event.target.value);
     };
 
+    const handleSearchTypeChange = (event) => {
+        setSearchType(event.target.value);
+    };
+
+    const handleEditButton = (product) => {
+        navigate(`/edit/${product.id}`, { state: { product } });
+    };
+    
+
+
     return (
-        <div className="main-container">
+        <div>
             <h1>IoT Device Catalogue</h1>
-            <input
-                type="text"
-                placeholder="Search by name or type"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="search-input"
-            />
-            <button onClick={handleSearch} className="btn btn-primary">Search</button>
+            <div>
+                <select onChange={handleSearchTypeChange} className="search-type-selector">
+                    <option value="name">Name</option>
+                    <option value="type">Type</option>
+                </select>
+                <input
+                    type="text"
+                    placeholder={`Search by ${searchType}`}
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="search-input"
+                />
+                <button onClick={handleSearch} className="btn btn-primary">Search</button>
+            </div>
             <div className="device-list">
-                {devices.length > 0 ? devices.map(device => (
+                {devices.map(device => (
                     <div key={device.id} className="device-item">
                         <p><strong>Name:</strong> {device.name}</p>
                         <p><strong>Type:</strong> {device.type}</p>
                         <p><strong>Price:</strong> ${device.price}</p>
                         <p><strong>Stock:</strong> {device.quantity}</p>
+                        {user && user.role === 'STAFF' && (
+                            <>
+                                <button className="btn btn-secondary" onClick={() => handleEditButton(device)}>Edit</button>
+                            </>
+                        )}
                     </div>
-                )) : <p>No devices found.</p>}
+                ))}
             </div>
         </div>
     );

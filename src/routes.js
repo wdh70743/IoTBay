@@ -32,7 +32,7 @@ const routes = [
         component: <CreateProductPage />
     },
     {
-        path: '/Manage',
+        path: "/edit/:id",
         component: <ManageProductPage />
     }
 ]
