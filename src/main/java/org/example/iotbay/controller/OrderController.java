@@ -19,7 +19,7 @@ import java.util.List;
 
 @RequestMapping("/api/order")
 @Tag(name= "order", description = "Order API")
-
+@CrossOrigin(origins = "http://localhost:3000")
 public class OrderController {
     private final OrderService orderService;
 
