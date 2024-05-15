@@ -51,8 +51,11 @@ public class User extends BaseEntity{
     @NotNull(message = "Role cannot be null")
     @Column(length = 25)
     private String role;
-
     @JsonManagedReference
+
+    @Column(nullable = false)
+    private boolean active = true;
+
     @ToString.Exclude
     @OrderBy("id")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

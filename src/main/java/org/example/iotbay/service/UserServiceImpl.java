@@ -29,7 +29,6 @@ public class UserServiceImpl implements UserService{
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
-
     private void saveLog(User user, String action){
         UserLog userLog = new UserLog();
         userLog.setUser(user);
@@ -57,7 +56,6 @@ public class UserServiceImpl implements UserService{
     public Response loginUser(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
-
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
             throw new IllegalArgumentException("Email or Password is incorrect");
         }
@@ -69,7 +67,6 @@ public class UserServiceImpl implements UserService{
     public Response loginStaff(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
-
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
             throw new IllegalArgumentException("Email or Password is incorrect");
         }
@@ -84,7 +81,6 @@ public class UserServiceImpl implements UserService{
     public String logoutUser(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
-
         if (!Objects.equals(user.getPassword(), loginRequest.getPassword())){
             throw new IllegalArgumentException("Email or Password is incorrect");
         }
@@ -96,7 +92,6 @@ public class UserServiceImpl implements UserService{
     public String logoutStaff(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
-
         if (!Objects.equals(user.getPassword(), loginRequest.getPassword())){
             throw new IllegalArgumentException("Email or Password is incorrect");
         }
