@@ -45,6 +45,19 @@ public class UserDTO {
         private String email;
         private String password;
     }
-
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class AdminRequest {
+        private Long adminId;
+        private String email;
+        private String password;
+        private String firstName;
+        private String lastName;
+        private String phoneNumber;
+        private String role;
+        private String address;
+    }
 
 }

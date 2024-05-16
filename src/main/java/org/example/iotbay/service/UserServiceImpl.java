@@ -29,7 +29,6 @@ public class UserServiceImpl implements UserService{
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
-
     private void saveLog(User user, String action){
         UserLog userLog = new UserLog();
         userLog.setUser(user);
