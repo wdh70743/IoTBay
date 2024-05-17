@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService{
             throw new UnauthorizedAccessException("User is not authorized as staff member");
         }
         saveLog(user, "SIGN-IN");
-        return modelMapper.map(user, Response.class);
+    return modelMapper.map(user, Response.class);
     }
 
     @Override
@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService{
         if (!Objects.equals(user.getPassword(), loginRequest.getPassword())){
             throw new IllegalArgumentException("Email or Password is incorrect");
         }
-        if (!Objects.equals(user.getRole(), "Admin")){
+        if (!Objects.equals(user.getRole(), "ADMIN")){
             throw new UnauthorizedAccessException("User is not authorized as staff member");
         }
         saveLog(user, "SIGN-OUT");
