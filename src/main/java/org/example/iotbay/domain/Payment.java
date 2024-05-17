@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -43,5 +44,6 @@ public class Payment extends BaseEntity {
 
     @NotNull(message = "Payment date cannot be null")
     @Column(nullable = false)
+    @CreatedDate
     private LocalDateTime paymentDate;
 }

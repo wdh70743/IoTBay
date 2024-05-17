@@ -27,6 +27,8 @@ public class OrderController {
     @Operation(summary = "Create a new order", description = "Creates a new order with the specified details.")
     @Parameters({
             @Parameter(name = "userId", description = "The user Id requesting the order", example = "1"),
+            @Parameter(name = "items", description = "The order line items requesting the order", example = "1"),
+            @Parameter(name = "status", description = "The status requesting the order", example = "1"),
 
     })
     public ResponseEntity<OrderDTO.Response> createOrder(@Validated @RequestBody OrderDTO.Request orderRequest) {

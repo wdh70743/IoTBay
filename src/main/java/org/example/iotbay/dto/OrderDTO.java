@@ -16,7 +16,7 @@ public class OrderDTO {
     public static class Request{
         private long userId;
         private List<OrderLineItemDTO> items;
-        private String status;
+
     }
     @NoArgsConstructor
     @AllArgsConstructor
@@ -26,6 +26,7 @@ public class OrderDTO {
         private Long id;
         private Long userId;
         private List<OrderLineItemDTO> items;
+        private double price;
         private String status;
         private LocalDateTime createdAt;
 
@@ -38,6 +39,5 @@ public class OrderDTO {
     public static class OrderLineItemDTO {
         private Long productId;
         private Integer quantity;
-        private double price;  // Price per item at the time of order
     }
 }
