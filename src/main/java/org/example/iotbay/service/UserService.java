@@ -16,9 +16,13 @@ public interface UserService {
 
     Response loginStaff(LoginRequest loginRequest);
 
+    Response loginAdmin(LoginRequest loginRequest);
+
     String logoutUser(LoginRequest loginRequest);
 
     String logoutStaff(LoginRequest loginRequest);
+
+    String logoutAdmin(LoginRequest loginRequest);
 
 
     Response getUserDetails(Long id);

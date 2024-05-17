@@ -80,6 +80,21 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public Response loginAdmin(LoginRequest loginRequest) {
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
+
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
+            throw new IllegalArgumentException("Email or Password is incorrect");
+        }
+        if (!Objects.equals(user.getRole(), "ADMIN")){
+            throw new UnauthorizedAccessException("User is not authorized as admin member");
+        }
+        saveLog(user, "SIGN-IN");
+        return modelMapper.map(user, Response.class);
+    }
+
+    @Override
     public String logoutUser(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
@@ -100,6 +115,21 @@ public class UserServiceImpl implements UserService{
             throw new IllegalArgumentException("Email or Password is incorrect");
         }
         if (!Objects.equals(user.getRole(), "STAFF")){
+            throw new UnauthorizedAccessException("User is not authorized as staff member");
+        }
+        saveLog(user, "SIGN-OUT");
+        return "Logout Successfully";
+    }
+
+    @Override
+    public String logoutAdmin(LoginRequest loginRequest) {
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
+
+        if (!Objects.equals(user.getPassword(), loginRequest.getPassword())){
+            throw new IllegalArgumentException("Email or Password is incorrect");
+        }
+        if (!Objects.equals(user.getRole(), "Admin")){
             throw new UnauthorizedAccessException("User is not authorized as staff member");
         }
         saveLog(user, "SIGN-OUT");
