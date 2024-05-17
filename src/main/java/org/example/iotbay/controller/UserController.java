@@ -61,6 +61,16 @@ public class UserController {
         return ResponseEntity.ok(userService.loginStaff(loginRequest));
     }
 
+    @PostMapping("/login-admin")
+    @Operation(summary = "Login with Email and Password", description="Login with admin's email and password")
+    @Parameters({
+            @Parameter(name = "email", description = "The email of the admin", example = "wdh70743@gmail.com"),
+            @Parameter(name = "password", description = "The password of the admin", example = "abcd1234"),
+    })
+    public ResponseEntity<Response> loginAdmin(@RequestBody LoginRequest loginRequest){
+        return ResponseEntity.ok(userService.loginAdmin(loginRequest));
+    }
+
     @PostMapping("/logout-user")
     @Operation(summary = "Logout with Email and Password", description="Logout with user's email and password")
     @Parameters({
@@ -78,6 +88,16 @@ public class UserController {
     })
     public ResponseEntity<String> logoutStaff(@RequestBody LoginRequest loginRequest){
         return ResponseEntity.ok(userService.logoutStaff(loginRequest));
+    }
+
+    @PostMapping("/logout-admin")
+    @Operation(summary = "Logout with Email and Password", description="Logout with admin's email and password")
+    @Parameters({
+            @Parameter(name = "email", description = "The email of the admin", example = "wdh70743@gmail.com"),
+            @Parameter(name = "password", description = "The password of the admin", example = "abcd1234"),
+    })
+    public ResponseEntity<String> logoutAdmin(@RequestBody LoginRequest loginRequest){
+        return ResponseEntity.ok(userService.logoutAdmin(loginRequest));
     }
 
     @GetMapping("/user/{id}")
