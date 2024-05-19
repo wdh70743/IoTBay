@@ -1,0 +1,36 @@
+.profile-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+.profile-container h1, .profile-container h2 {
+    color: #333;
+}
+
+.profile-container div {
+    margin-bottom: 20px;
+}
+
+input[type="text"], input[type="email"] {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    padding: 8px;
+    margin-top: 5px;
+    background: #ececec;
+    border-radius: 4px;
+}

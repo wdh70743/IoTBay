@@ -1,0 +1,40 @@
+html,
+body {
+  height: 100%;
+}
+
+.form-signin {
+  max-width: 330px;
+  padding: 1rem;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.signin-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Use the full screen height */
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 400px; /* Set a max-width if you want */
+  margin: auto;
+  padding: 15px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Optional: adds a little shadow to make the form pop a bit */
+}

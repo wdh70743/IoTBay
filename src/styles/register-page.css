@@ -1,0 +1,31 @@
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100vh;
+  }
+  
+  .form-register {
+    width: 100%;
+    max-width: 400px;
+    margin: 15px;
+  }
+  
+  /* Further style your input fields and button */
+  .form-register input {
+    margin-bottom: 10px;
+    width: 100%;
+    padding: 8px;
+  }
+  
+  .form-register button {
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+  }
+  
+  /* Include additional styles for alert messages */
+  .alert {
+    margin-bottom: 15px;
+  }

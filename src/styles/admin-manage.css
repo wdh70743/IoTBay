@@ -1,0 +1,52 @@
+/* admin-manage.css */
+/* admin-manage.css */
+
+.admin-manage {
+    padding: 20px;
+}
+
+.admin-manage h1, .admin-manage h2 {
+    margin-bottom: 20px;
+}
+
+.admin-manage .form-group {
+    margin-bottom: 15px;
+}
+
+.admin-manage .form-control {
+    margin-bottom: 10px;
+}
+
+.admin-manage button {
+    margin-top: 10px;
+}
+
+.admin-manage ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.admin-manage li {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-manage .user-details {
+    flex: 1;
+}
+
+.admin-manage .user-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.top-right-buttons {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
