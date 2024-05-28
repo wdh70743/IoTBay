@@ -90,14 +90,6 @@ public class PaymentServiceImpl implements PaymentService{
     }
 
 
-    @Override
-    @Transactional
-    public List<PaymentDTO.Response> searchPayments(LocalDateTime startDate, LocalDateTime endDate) {
-        List<Payment> payments = paymentRepository.findByPaymentDateBetween(startDate, endDate);
-        return payments.stream()
-                .map(payment -> modelMapper.map(payment, PaymentDTO.Response.class))
-                .collect(Collectors.toList());
-    }
 
     @Override
     @Transactional

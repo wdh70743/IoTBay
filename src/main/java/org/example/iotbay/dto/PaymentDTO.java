@@ -15,11 +15,8 @@ public class PaymentDTO {
     @Setter
     public static class Request{
         private Long orderId;
-
         private String paymentMethod;
-        private String cardLastFourDigits; // Only store last four digits for security reasons
-        private LocalDateTime paymentDate;
-        private String paymentStatus;
+        private String cardLastFourDigits;
     }
 
     @NoArgsConstructor
@@ -33,7 +30,6 @@ public class PaymentDTO {
         private String paymentMethod;
         private String cardLastFourDigits;
         private String paymentStatus;
-        private LocalDateTime paymentDate;
         private LocalDateTime createdAt;
     }
 }

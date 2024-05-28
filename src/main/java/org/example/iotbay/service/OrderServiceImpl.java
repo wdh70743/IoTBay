@@ -40,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = new Order();
         order.setUser(user);
-        order.setStatus(request.getStatus());
+        order.setStatus("Pending");
 
         Order savedOrder = orderRepository.save(order);
         List<OrderLineItem> orderItems = request.getItems().stream()
@@ -61,12 +61,14 @@ public class OrderServiceImpl implements OrderService {
                 }).collect(Collectors.toList());
 
         orderLineItemRepository.saveAll(orderItems);
+        double totalPrice = orderItems.stream()
+                .mapToDouble(OrderLineItem::getTotalPrice)
+                .sum();
 
         List<OrderDTO.OrderLineItemDTO> itemsDto = orderItems.stream().map(item -> {
             OrderDTO.OrderLineItemDTO dto = new OrderDTO.OrderLineItemDTO();
             dto.setProductId(item.getProduct().getId()); // Manually set productId
             dto.setQuantity(item.getQuantity());
-            dto.setPrice(item.getPrice());
             return dto;
         }).collect(Collectors.toList());
         savedOrder.setItems(new HashSet<>(orderItems));
@@ -75,6 +77,7 @@ public class OrderServiceImpl implements OrderService {
         OrderDTO.Response response = modelMapper.map(savedOrder, OrderDTO.Response.class);
         response.setItems(itemsDto);
         response.setUserId(savedOrder.getUser().getId());
+        response.setPrice(totalPrice);
         return response;
     }
 
@@ -104,7 +107,7 @@ public class OrderServiceImpl implements OrderService {
                     .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + request.getUserId()));
             existingOrder.setUser(user);
         }
-        existingOrder.setStatus(request.getStatus());
+        existingOrder.setStatus("Pending");
 
         existingOrder.getItems().clear();
 
@@ -116,7 +119,6 @@ public class OrderServiceImpl implements OrderService {
                     orderItem.setOrder(existingOrder);
                     orderItem.setProduct(product);
                     orderItem.setQuantity(itemDto.getQuantity());
-                    orderItem.setPrice(itemDto.getPrice());
                     return orderItem;
                 }).collect(Collectors.toList());
 
@@ -128,7 +130,6 @@ public class OrderServiceImpl implements OrderService {
             OrderDTO.OrderLineItemDTO dto = new OrderDTO.OrderLineItemDTO();
             dto.setProductId(item.getProduct().getId());
             dto.setQuantity(item.getQuantity());
-            dto.setPrice(item.getPrice());
             return dto;
         }).collect(Collectors.toList());
 

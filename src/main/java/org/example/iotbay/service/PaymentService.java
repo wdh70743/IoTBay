@@ -14,8 +14,6 @@ public interface PaymentService {
 
     PaymentDTO.Response getPaymentsByOrderId(Long orderId);
 
-    List<PaymentDTO.Response> searchPayments(LocalDateTime startDate, LocalDateTime endDate);
-
     String deletePayment(Long paymentId);
 
 }

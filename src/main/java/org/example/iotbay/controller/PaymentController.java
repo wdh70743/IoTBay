@@ -2,6 +2,9 @@ package org.example.iotbay.controller;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.iotbay.dto.PaymentDTO;
@@ -21,15 +24,42 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping("/create")
-    @Operation(summary = "Create a payment", description = "Creates a new payment record for an order.")
-    public ResponseEntity<PaymentDTO.Response> createPayment(@Validated @RequestBody PaymentDTO.Request request) {
+    @Operation(
+            summary = "Create a payment",
+            description = "Creates a new payment record for an order.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    example = """
+                    {
+                      "orderId": 1,
+                      "paymentMethod": "Credit Card",
+                      "cardLastFourDigits": "1234"
+                    }
+                    """
+                            )
+                    )
+            )
+    )
+    public ResponseEntity<PaymentDTO.Response> createPayment(
+            @Validated @RequestBody PaymentDTO.Request request
+    ) {
         PaymentDTO.Response response = paymentService.createPayment(request);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{paymentId}")
-    @Operation(summary = "Get a payment", description = "Retrieves a payment by its ID.")
-    public ResponseEntity<PaymentDTO.Response> getPaymentById(@PathVariable Long paymentId) {
+    @Operation(
+            summary = "Get a payment",
+            description = "Retrieves a payment by its ID.",
+            parameters = {
+                    @Parameter(name = "paymentId", description = "The ID of the payment to retrieve", example = "1")
+            }
+    )
+    public ResponseEntity<PaymentDTO.Response> getPaymentById(
+            @PathVariable Long paymentId
+    ) {
         PaymentDTO.Response response = paymentService.getPaymentById(paymentId);
         return ResponseEntity.ok(response);
     }
@@ -42,25 +72,48 @@ public class PaymentController {
     }
 
     @PutMapping("/{paymentId}")
-    @Operation(summary = "Update a payment", description = "Updates an existing payment record.")
-    public ResponseEntity<PaymentDTO.Response> updatePayment(@PathVariable Long paymentId, @Validated @RequestBody PaymentDTO.Request request) {
+    @Operation(
+            summary = "Update a payment",
+            description = "Updates an existing payment record.",
+            parameters = {
+                    @Parameter(name = "paymentId", description = "The ID of the payment to update", example = "1")
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    example = """
+                    {
+                      "orderId": 1,
+                      "paymentMethod": "Credit Card",
+                      "cardLastFourDigits": "5678"
+                    }
+                    """
+                            )
+                    )
+            )
+    )
+    public ResponseEntity<PaymentDTO.Response> updatePayment(
+            @PathVariable Long paymentId,
+            @Validated @RequestBody PaymentDTO.Request request
+    ) {
         PaymentDTO.Response response = paymentService.updatePayment(paymentId, request);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{paymentId}")
-    @Operation(summary = "Delete a payment", description = "Deletes a payment record by its ID.")
-    public ResponseEntity<String> deletePayment(@PathVariable Long paymentId) {
+    @Operation(
+            summary = "Delete a payment",
+            description = "Deletes a payment record by its ID.",
+            parameters = {
+                    @Parameter(name = "paymentId", description = "The ID of the payment to delete", example = "1")
+            }
+    )
+    public ResponseEntity<String> deletePayment(
+            @PathVariable Long paymentId
+    ) {
         String result = paymentService.deletePayment(paymentId);
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/search")
-    @Operation(summary = "Search payments by date", description = "Searches for payments within a specific date range.")
-    public ResponseEntity<List<PaymentDTO.Response>> searchPayments(
-            @RequestParam("start") LocalDateTime start,
-            @RequestParam("end") LocalDateTime end) {
-        List<PaymentDTO.Response> responses = paymentService.searchPayments(start, end);
-        return ResponseEntity.ok(responses);
-    }
 }

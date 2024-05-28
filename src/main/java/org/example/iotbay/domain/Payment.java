@@ -41,7 +41,4 @@ public class Payment extends BaseEntity {
     @Column(nullable = false, length = 20)
     private String paymentStatus;
 
-    @NotNull(message = "Payment date cannot be null")
-    @Column(nullable = false)
-    private LocalDateTime paymentDate;
 }
